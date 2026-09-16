@@ -1,11 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+export type UserRole = "student" | "instructor";
 export interface IUser extends Document {
     firstName: string;
     lastName: string;
     email: string;
     password: string;
-    role: string;
+    role: UserRole;
     createdAt: Date;
     updatedAt: Date;
 
