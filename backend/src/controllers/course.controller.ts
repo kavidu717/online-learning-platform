@@ -3,6 +3,7 @@ import { Response } from "express";
 import { createCourseSchema } from "../validations/course.validation.js";
 import Course from "../models/Course.js";
 import mongoose from "mongoose";
+import Enrollment from "../models/Enrollment.js";
 
 
 export const createCourse=async (req: AuthenticatedRequest, res: Response) => {
@@ -256,6 +257,60 @@ export const deleteCourse=async (req: AuthenticatedRequest, res: Response) => {
         return res.status(200).json({
             message: "Course deleted successfully"
         });
+
+    }catch(error){
+        console.error(error);
+        return res.status(500)
+        .json(
+            { message: "Internal server error" }
+        );
+    }
+}
+
+export const getCoursesStudents=async (req: AuthenticatedRequest, res: Response) => {
+    try{
+
+        if(!req.user){
+            return res.status(401).json({
+                message: "Authentication required",
+            });
+        }
+
+        const {courseId}=req.params;
+
+        if (!courseId || Array.isArray(courseId)) {
+            return res.status(400).json({
+                message: "Invalid course ID",
+            });
+        }
+
+        if(!mongoose.Types.ObjectId.isValid(courseId)){
+            return res.status(400).json({
+                message: "Invalid course id"
+            });
+        }
+
+        const course=await Course.findById(courseId)
+
+         if(!course){
+            return res.status(404).json({
+                message: "Course not found"
+            });
+        }
+
+        if(course.instructor.toString()!==req.user.userId){
+            return res.status(403).json({
+                message: "You are not authorized to view students of this course"
+            });
+        }
+
+        const enrollments=await Enrollment.find({course: courseId}).populate("student", "firstName lastName email");
+
+        return res.status(200).json({
+            message: "Students fetched successfully",
+            students: enrollments
+        });
+
 
     }catch(error){
         console.error(error);

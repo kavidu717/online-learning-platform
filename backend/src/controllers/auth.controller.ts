@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { UserRole } from "../models/User.js";
 import jwt from "jsonwebtoken";
+import { AuthenticatedRequest } from "../middleware/auth.middleware.js";
 
 
 export const register=async (req: Request, res: Response) => {
@@ -145,5 +146,42 @@ export const login=async (req: Request, res: Response) => {
         json(
             { message: "Internal server error" }
         );
+    }
+}
+
+export const getMe=async (req: AuthenticatedRequest, res: Response) => {
+    try{
+
+        if(!req.user){
+            return res.status(401).json({
+                message: "Authentication required",
+            });
+        }
+
+         const user = await User.findById(req.user.userId).select(
+            "-password"
+        );
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+            });
+        }
+
+        return res.status(200).json({
+            message: "User fetched successfully",
+            user,
+        });
+        
+
+
+
+    }catch(error){
+        console.error("Error in getMe controller:", error);
+        res.status(500).
+        json(
+            { message: "Internal server error" }
+        );
+
     }
 }

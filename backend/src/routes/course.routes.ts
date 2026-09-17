@@ -1,6 +1,6 @@
 import {Router} from "express";
 import { authenticate, authorize } from "../middleware/auth.middleware.js";
-import { createCourse, deleteCourse, getAllCourses, getCourseById, getMyCourses, updateCourse } from "../controllers/course.controller.js";
+import { createCourse, deleteCourse, getAllCourses, getCourseById, getMyCourses, updateCourse,getCoursesStudents } from "../controllers/course.controller.js";
 
 
 
@@ -27,6 +27,13 @@ router.get(
     authenticate,
     authorize("instructor"),
     getMyCourses
+);
+
+router.get(
+    "/:courseId/students",
+    authenticate,
+    authorize("instructor"),
+    getCoursesStudents
 );
 
 
