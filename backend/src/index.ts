@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
+import courseRoutes from "./routes/course.routes.js";
 
 
 dotenv.config();
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/courses", courseRoutes);
 
 const PORT = process.env.PORT;
 
