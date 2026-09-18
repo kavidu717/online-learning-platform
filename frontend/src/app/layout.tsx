@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import ThemeProvider from "@/components/ThemeProvider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
     title: "LearnHub",
@@ -19,6 +20,7 @@ export default function RootLayout({
                 <ThemeProvider>
                     <Navbar />
                     <main>{children}</main>
+                    <Toaster position="top-right" richColors />
                 </ThemeProvider>
             </body>
         </html>

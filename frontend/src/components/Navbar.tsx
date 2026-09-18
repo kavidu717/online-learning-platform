@@ -1,14 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, User, LogOut } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
 
 export default function Navbar() {
+    const router = useRouter();
     const { theme, setTheme } = useTheme();
+    const { user, isAuthenticated, logout } = useAuthStore();
 
     const toggleTheme = () => {
         setTheme(theme === "dark" ? "light" : "dark");
+    };
+
+    const handleLogout = () => {
+        logout();
+        router.push("/login");
     };
 
     return (
@@ -21,20 +30,79 @@ export default function Navbar() {
                     LearnHub
                 </Link>
 
-                <div className="flex items-center gap-6">
-                    <Link
-                        href="/login"
-                        className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
-                    >
-                        Login
-                    </Link>
+                <div className="flex items-center gap-5">
+                    {!isAuthenticated ? (
+                        <>
+                            <Link
+                                href="/login"
+                                className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
+                            >
+                                Login
+                            </Link>
 
-                    <Link
-                        href="/register"
-                        className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-                    >
-                        Register
-                    </Link>
+                            <Link
+                                href="/register"
+                                className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                            >
+                                Register
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            {user?.role === "student" && (
+                                <>
+                                    <Link
+                                        href="/courses"
+                                        className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
+                                    >
+                                        Courses
+                                    </Link>
+
+                                    <Link
+                                        href="/my-courses"
+                                        className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
+                                    >
+                                        My Courses
+                                    </Link>
+                                </>
+                            )}
+
+                            {user?.role === "instructor" && (
+                                <>
+                                    <Link
+                                        href="/instructor/dashboard"
+                                        className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
+                                    >
+                                        Dashboard
+                                    </Link>
+
+                                    <Link
+                                        href="/instructor/courses"
+                                        className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
+                                    >
+                                        My Courses
+                                    </Link>
+                                </>
+                            )}
+
+                            <Link
+                                href="/profile"
+                                className="rounded-full border border-gray-300 p-2 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                                aria-label="Profile"
+                            >
+                                <User size={18} />
+                            </Link>
+
+                            <button
+                                type="button"
+                                onClick={handleLogout}
+                                className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-red-400"
+                            >
+                                <LogOut size={18} />
+                                <span>Logout</span>
+                            </button>
+                        </>
+                    )}
 
                     <button
                         type="button"
