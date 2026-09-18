@@ -43,11 +43,8 @@ export default function CoursesPage() {
                 setLoading(true);
                 setError("");
 
-                const response = await API.get("/courses", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+
+                const response = await API.get("/courses");
 
                 setCourses(response.data.courses);
             } catch (error: any) {

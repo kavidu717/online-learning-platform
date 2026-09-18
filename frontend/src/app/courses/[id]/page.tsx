@@ -49,22 +49,13 @@ export default function CourseDetailsPage() {
                 setLoading(true);
                 setError("");
 
-                const courseResponse = await API.get(`/courses/${courseId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const courseResponse = await API.get(`/courses/${courseId}`);
 
                 setCourse(courseResponse.data.course);
 
                 if (user?.role === "student") {
                     const statusResponse = await API.get(
-                        `/enrollments/${courseId}/status`,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
+                        `/enrollments/${courseId}/status`
                     );
 
                     setEnrolled(statusResponse.data.enrolled);
@@ -97,15 +88,7 @@ export default function CourseDetailsPage() {
             setError("");
             setSuccess("");
 
-            await API.post(
-                `/enrollments/${courseId}`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            await API.post(`/enrollments/${courseId}`, {});
 
             setEnrolled(true);
             setSuccess("You have successfully enrolled in this course.");
