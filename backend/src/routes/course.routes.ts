@@ -1,12 +1,12 @@
-import {Router} from "express";
+import { Router } from "express";
 import { authenticate, authorize } from "../middleware/auth.middleware.js";
-import { createCourse, deleteCourse, getAllCourses, getCourseById, getMyCourses, updateCourse,getCoursesStudents } from "../controllers/course.controller.js";
+import { createCourse, deleteCourse, getAllCourses, getCourseById, getMyCourses, updateCourse, getCoursesStudents } from "../controllers/course.controller.js";
 
 
 
 
 
-const router=Router();
+const router = Router();
 
 
 router.post(
@@ -18,7 +18,7 @@ router.post(
 
 router.get(
     "/",
-    authenticate,
+
     getAllCourses
 );
 
@@ -41,7 +41,7 @@ router.get(
 
 router.get(
     "/:id",
-    authenticate,
+
     getCourseById
 );
 

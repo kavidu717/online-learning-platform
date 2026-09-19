@@ -3,7 +3,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, User, CheckCircle, AlertCircle } from "lucide-react";
+import {
+    ArrowLeft,
+    BookOpen,
+    User,
+    CheckCircle,
+    AlertCircle,
+    LogIn,
+} from "lucide-react";
 import { API } from "@/service/axios";
 import { useAuthStore } from "@/store/authStore";
 
@@ -40,7 +47,7 @@ export default function CourseDetailsPage() {
     const courseId = params.id as string;
 
     useEffect(() => {
-        if (!token || !courseId) {
+        if (!courseId) {
             return;
         }
 
@@ -49,11 +56,13 @@ export default function CourseDetailsPage() {
                 setLoading(true);
                 setError("");
 
-                const courseResponse = await API.get(`/courses/${courseId}`);
+                const courseResponse = await API.get(
+                    `/courses/${courseId}`
+                );
 
                 setCourse(courseResponse.data.course);
 
-                if (user?.role === "student") {
+                if (token && user?.role === "student") {
                     const statusResponse = await API.get(
                         `/enrollments/${courseId}/status`
                     );
@@ -75,11 +84,15 @@ export default function CourseDetailsPage() {
         };
 
         fetchCourse();
-    }, [token, courseId, user?.role]);
+    }, [courseId, token, user?.role]);
 
     const handleEnroll = async () => {
         if (!token) {
             router.push("/login");
+            return;
+        }
+
+        if (user?.role !== "student") {
             return;
         }
 
@@ -91,7 +104,9 @@ export default function CourseDetailsPage() {
             await API.post(`/enrollments/${courseId}`, {});
 
             setEnrolled(true);
-            setSuccess("You have successfully enrolled in this course.");
+            setSuccess(
+                "You have successfully enrolled in this course."
+            );
         } catch (error: any) {
             console.error("Enrollment Error:", error);
             console.error("Status:", error.response?.status);
@@ -242,26 +257,32 @@ export default function CourseDetailsPage() {
                             </div>
                         )}
 
-                        {user?.role === "student" && (
-                            <div>
-                                {enrolled ? (
-                                    <div className="flex items-center justify-center gap-2 rounded-lg bg-green-600 px-5 py-3 font-medium text-white">
-                                        <CheckCircle size={20} />
-                                        Enrolled
-                                    </div>
-                                ) : (
-                                    <button
-                                        onClick={handleEnroll}
-                                        disabled={enrolling}
-                                        className="w-full rounded-lg bg-black px-5 py-3 font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-                                    >
-                                        {enrolling
-                                            ? "Enrolling..."
-                                            : "Enroll in Course"}
-                                    </button>
-                                )}
-                            </div>
-                        )}
+                        {!token ? (
+                            <button
+                                onClick={() => router.push("/login")}
+                                className="flex w-full items-center justify-center gap-2 rounded-lg bg-black px-5 py-3 font-medium text-white transition hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                            >
+                                <LogIn size={20} />
+                                Login to Enroll
+                            </button>
+                        ) : user?.role === "student" ? (
+                            enrolled ? (
+                                <div className="flex items-center justify-center gap-2 rounded-lg bg-green-600 px-5 py-3 font-medium text-white">
+                                    <CheckCircle size={20} />
+                                    Enrolled
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={handleEnroll}
+                                    disabled={enrolling}
+                                    className="w-full rounded-lg bg-black px-5 py-3 font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                                >
+                                    {enrolling
+                                        ? "Enrolling..."
+                                        : "Enroll in Course"}
+                                </button>
+                            )
+                        ) : null}
                     </div>
                 </div>
             </div>

@@ -3,18 +3,15 @@
 import Link from "next/link";
 import { Moon, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 
 export default function Navbar() {
-    const router = useRouter();
     const { theme, setTheme } = useTheme();
-    const { user, isAuthenticated, logout } = useAuthStore();
+    const { user, isAuthenticated } = useAuthStore();
 
     const toggleTheme = () => {
         setTheme(theme === "dark" ? "light" : "dark");
     };
-
 
     return (
         <header className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
@@ -29,6 +26,13 @@ export default function Navbar() {
                 <div className="flex items-center gap-5">
                     {!isAuthenticated ? (
                         <>
+                            <Link
+                                href="/courses"
+                                className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
+                            >
+                                Courses
+                            </Link>
+
                             <Link
                                 href="/login"
                                 className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
@@ -88,8 +92,6 @@ export default function Navbar() {
                             >
                                 <User size={18} />
                             </Link>
-
-
                         </>
                     )}
 

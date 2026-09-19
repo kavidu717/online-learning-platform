@@ -34,25 +34,18 @@ export default function CoursesPage() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        if (!token) {
-            return;
-        }
-
         const fetchCourses = async () => {
             try {
                 setLoading(true);
-                setError("");
-
 
                 const response = await API.get("/courses");
 
                 setCourses(response.data.courses);
             } catch (error: any) {
-
-
+                console.error("Error fetching courses:", error);
                 setError(
                     error.response?.data?.message ||
-                    "Failed to fetch courses"
+                    "Failed to load courses"
                 );
             } finally {
                 setLoading(false);
@@ -60,7 +53,7 @@ export default function CoursesPage() {
         };
 
         fetchCourses();
-    }, [token]);
+    }, []);
 
     if (loading) {
         return (
