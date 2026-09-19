@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Moon, Sun, User, LogOut } from "lucide-react";
+import { Moon, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
@@ -15,10 +15,6 @@ export default function Navbar() {
         setTheme(theme === "dark" ? "light" : "dark");
     };
 
-    const handleLogout = () => {
-        logout();
-        router.push("/login");
-    };
 
     return (
         <header className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
@@ -93,14 +89,7 @@ export default function Navbar() {
                                 <User size={18} />
                             </Link>
 
-                            <button
-                                type="button"
-                                onClick={handleLogout}
-                                className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-red-400"
-                            >
-                                <LogOut size={18} />
-                                <span>Logout</span>
-                            </button>
+
                         </>
                     )}
 

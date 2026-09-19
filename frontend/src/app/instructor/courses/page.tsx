@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
+    ArrowLeft,
     BookOpen,
     Plus,
     Pencil,
@@ -30,8 +31,8 @@ interface Course {
     updatedAt: string;
 }
 
-export default function InstructorDashboardPage() {
-    const { token, user } = useAuthStore();
+export default function InstructorCoursesPage() {
+    const { token } = useAuthStore();
 
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
@@ -108,7 +109,7 @@ export default function InstructorDashboardPage() {
                 <div className="mx-auto max-w-6xl">
                     <div className="flex min-h-[400px] items-center justify-center">
                         <p className="text-gray-600 dark:text-gray-400">
-                            Loading dashboard...
+                            Loading courses...
                         </p>
                     </div>
                 </div>
@@ -119,22 +120,36 @@ export default function InstructorDashboardPage() {
     return (
         <main className="min-h-[calc(100vh-73px)] bg-gray-50 px-6 py-10 dark:bg-gray-950">
             <div className="mx-auto max-w-6xl">
+                <Link
+                    href="/instructor/dashboard"
+                    className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                >
+                    <ArrowLeft size={18} />
+                    Back to Dashboard
+                </Link>
+
                 <div className="mb-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <p className="mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-                            Welcome back
+                            Instructor
                         </p>
 
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                            {user?.firstName} {user?.lastName}
+                            My Courses
                         </h1>
 
                         <p className="mt-2 text-gray-600 dark:text-gray-400">
-                            Manage your courses and students.
+                            Manage the courses you have created.
                         </p>
                     </div>
 
-
+                    <Link
+                        href="/instructor/courses/create"
+                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                    >
+                        <Plus size={18} />
+                        Create Course
+                    </Link>
                 </div>
 
                 {error && (
@@ -144,68 +159,41 @@ export default function InstructorDashboardPage() {
                     </div>
                 )}
 
-                <div className="mb-8 grid gap-4 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-                        <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800">
+                <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+                    <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800">
                             <BookOpen
-                                size={22}
+                                size={24}
                                 className="text-gray-600 dark:text-gray-300"
                             />
                         </div>
 
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Total Courses
-                        </p>
+                        <div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                Total Courses
+                            </p>
 
-                        <p className="mt-1 text-3xl font-bold text-gray-900 dark:text-white">
-                            {courses.length}
-                        </p>
-                    </div>
-
-                    <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-                        <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800">
-                            <Users
-                                size={22}
-                                className="text-gray-600 dark:text-gray-300"
-                            />
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                {courses.length}
+                            </p>
                         </div>
-
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Role
-                        </p>
-
-                        <p className="mt-1 text-3xl font-bold capitalize text-gray-900 dark:text-white">
-                            {user?.role}
-                        </p>
-                    </div>
-                </div>
-
-                <div className="mb-6 flex items-center justify-between">
-                    <div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                            My Courses
-                        </h2>
-
-                        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            Courses created by you.
-                        </p>
                     </div>
                 </div>
 
                 {courses.length === 0 ? (
-                    <div className="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white px-6 text-center dark:border-gray-800 dark:bg-gray-900">
+                    <div className="flex min-h-[350px] flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white px-6 text-center dark:border-gray-800 dark:bg-gray-900">
                         <BookOpen
-                            size={48}
+                            size={52}
                             className="mb-5 text-gray-400"
                         />
 
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                             No courses yet
-                        </h3>
+                        </h2>
 
                         <p className="mt-2 max-w-md text-gray-600 dark:text-gray-400">
-                            Create your first course to start teaching
-                            students.
+                            You have not created any courses yet. Create
+                            your first course to start teaching students.
                         </p>
 
                         <Link
@@ -231,9 +219,9 @@ export default function InstructorDashboardPage() {
                                 </div>
 
                                 <div className="p-6">
-                                    <h3 className="mb-3 line-clamp-2 text-xl font-semibold text-gray-900 dark:text-white">
+                                    <h2 className="mb-3 line-clamp-2 text-xl font-semibold text-gray-900 dark:text-white">
                                         {course.title}
-                                    </h3>
+                                    </h2>
 
                                     <p className="mb-5 line-clamp-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
                                         {course.description}

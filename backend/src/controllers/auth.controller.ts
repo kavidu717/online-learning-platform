@@ -7,19 +7,19 @@ import jwt from "jsonwebtoken";
 import { AuthenticatedRequest } from "../middleware/auth.middleware.js";
 
 
-export const register=async (req: Request, res: Response) => {
-    try{
-         
+export const register = async (req: Request, res: Response) => {
+    try {
+
         const validationResult = registerSchema.safeParse(req.body);
 
-         if (!validationResult.success) {
+        if (!validationResult.success) {
             return res.status(400).json({
                 message: "Validation failed",
                 errors: validationResult.error.issues,
             });
         }
 
-        const { firstName, lastName, email, password, invitationCode} = validationResult.data;
+        const { firstName, lastName, email, password, invitationCode } = validationResult.data;
 
         const existingUser = await User.findOne({ email });
 
@@ -29,7 +29,7 @@ export const register=async (req: Request, res: Response) => {
             });
         }
 
-        let role:UserRole="student";
+        let role: UserRole = "student";
 
         if (invitationCode) {
             if (
@@ -46,52 +46,52 @@ export const register=async (req: Request, res: Response) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const user=await User.create({
+        const user = await User.create({
             firstName,
             lastName,
             email,
             password: hashedPassword,
             role,
         });
-     
+
         res.status(201).json({
             message: "User registered successfully",
-            user:{
+            user: {
                 id: user._id,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                
+
                 email: user.email,
                 role: user.role
             }
-            
-      }  )
 
-    }catch(error){
+        })
+
+    } catch (error) {
         console.error("Error in register controller:", error);
         res.status(500).
-        json(
-            { message: "Internal server error" }
-        );
+            json(
+                { message: "Internal server error" }
+            );
     }
 
 }
 
-export const login=async (req: Request, res: Response) => {
-    try{
+export const login = async (req: Request, res: Response) => {
+    try {
 
         const validationResult = loginSchema.safeParse(req.body);
 
-         if (!validationResult.success) {
+        if (!validationResult.success) {
             return res.status(400).json({
                 message: "Validation failed",
                 errors: validationResult.error.issues,
             });
         }
 
-        const { email, password} = validationResult.data;
+        const { email, password } = validationResult.data;
 
-        const user = await User.findOne({email});
+        const user = await User.findOne({ email });
 
         if (!user) {
             return res.status(404).json({
@@ -104,18 +104,18 @@ export const login=async (req: Request, res: Response) => {
         if (!isPasswordValid) {
             return res.status(401).json({
                 message: "Invalid password or email",
-                });
-        
+            });
+
         }
 
         const jwtSecret = process.env.JWT_SECRET;
 
-         if (!jwtSecret) {
+        if (!jwtSecret) {
             return res.status(500).json({
                 message: "JWT secret is not defined",
             });
         }
-         
+
         const token = jwt.sign(
             {
                 userId: user._id.toString(),
@@ -140,25 +140,25 @@ export const login=async (req: Request, res: Response) => {
         });
 
 
-    }catch(error){
+    } catch (error) {
         console.error("Error in login controller:", error);
         res.status(500).
-        json(
-            { message: "Internal server error" }
-        );
+            json(
+                { message: "Internal server error" }
+            );
     }
 }
 
-export const getMe=async (req: AuthenticatedRequest, res: Response) => {
-    try{
+export const getMe = async (req: AuthenticatedRequest, res: Response) => {
+    try {
 
-        if(!req.user){
+        if (!req.user) {
             return res.status(401).json({
                 message: "Authentication required",
             });
         }
 
-         const user = await User.findById(req.user.userId).select(
+        const user = await User.findById(req.user.userId).select(
             "-password"
         );
 
@@ -172,16 +172,16 @@ export const getMe=async (req: AuthenticatedRequest, res: Response) => {
             message: "User fetched successfully",
             user,
         });
-        
 
 
 
-    }catch(error){
+
+    } catch (error) {
         console.error("Error in getMe controller:", error);
-        res.status(500).
-        json(
-            { message: "Internal server error" }
-        );
+        return res.status(500).
+            json(
+                { message: "Internal server error" }
+            );
 
     }
 }
