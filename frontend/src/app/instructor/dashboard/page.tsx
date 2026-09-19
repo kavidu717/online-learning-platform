@@ -48,14 +48,7 @@ export default function InstructorDashboardPage() {
                 setLoading(true);
                 setError("");
 
-                const response = await API.get(
-                    "/courses/my-courses",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+                const response = await API.get("/courses/my-courses");
 
                 setCourses(response.data.courses);
             } catch (error: any) {
@@ -88,11 +81,7 @@ export default function InstructorDashboardPage() {
             setDeletingId(courseId);
             setError("");
 
-            await API.delete(`/courses/${courseId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            await API.delete(`/courses/${courseId}`);
 
             setCourses((currentCourses) =>
                 currentCourses.filter(
