@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import ThemeProvider from "@/components/ThemeProvider";
 import { Toaster } from "sonner";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
     title: "LearnHub",
@@ -21,6 +22,8 @@ export default function RootLayout({
                     <Navbar />
                     <main>{children}</main>
                     <Toaster position="top-right" richColors />
+                    <Footer />
+
                 </ThemeProvider>
             </body>
         </html>
