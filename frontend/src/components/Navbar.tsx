@@ -14,7 +14,7 @@ export default function Navbar() {
     };
 
     return (
-        <header className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
+        <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/80">
             <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
                 <Link
                     href="/"

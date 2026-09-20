@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 import { API } from "@/service/axios";
 import { useAuthStore } from "@/store/authStore";
 
@@ -60,7 +61,6 @@ export default function EditCoursePage() {
     const [updating, setUpdating] = useState(false);
 
     const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
 
     const courseId = params.id as string;
 
@@ -111,21 +111,18 @@ export default function EditCoursePage() {
     ) => {
         event.preventDefault();
 
-        setError("");
-        setSuccess("");
-
         if (!title.trim()) {
-            setError("Course title is required");
+            toast.error("Course title is required");
             return;
         }
 
         if (!description.trim()) {
-            setError("Course description is required");
+            toast.error("Course description is required");
             return;
         }
 
         if (!content.trim()) {
-            setError("Course content is required");
+            toast.error("Course content is required");
             return;
         }
 
@@ -138,7 +135,7 @@ export default function EditCoursePage() {
                 content: content.trim(),
             });
 
-            setSuccess("Course updated successfully");
+            toast.success("Course updated successfully");
 
             setTimeout(() => {
                 router.push("/instructor/courses");
@@ -146,7 +143,7 @@ export default function EditCoursePage() {
         } catch (error: unknown) {
             console.error("Error updating course:", error);
 
-            setError(
+            toast.error(
                 getErrorMessage(error, "Failed to update course")
             );
         } finally {
@@ -215,18 +212,6 @@ export default function EditCoursePage() {
                     onSubmit={handleSubmit}
                     className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900"
                 >
-                    {error && (
-                        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400">
-                            {error}
-                        </div>
-                    )}
-
-                    {success && (
-                        <div className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600 dark:border-green-900 dark:bg-green-950/30 dark:text-green-400">
-                            {success}
-                        </div>
-                    )}
-
                     <div className="space-y-6">
                         <div>
                             <label

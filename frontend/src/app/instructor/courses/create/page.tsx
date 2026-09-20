@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, AlertCircle, CheckCircle } from "lucide-react";
+import { toast } from "sonner";
 import { API } from "@/service/axios";
 import { useAuthStore } from "@/store/authStore";
 
@@ -16,8 +17,6 @@ export default function CreateCoursePage() {
     const [content, setContent] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -29,8 +28,6 @@ export default function CreateCoursePage() {
 
         try {
             setLoading(true);
-            setError("");
-            setSuccess("");
 
             const response = await API.post(
                 "/courses",
@@ -46,7 +43,7 @@ export default function CreateCoursePage() {
                 }
             );
 
-            setSuccess(
+            toast.success(
                 response.data?.message || "Course created successfully."
             );
 
@@ -62,7 +59,7 @@ export default function CreateCoursePage() {
             console.error("Status:", error.response?.status);
             console.error("Response:", error.response?.data);
 
-            setError(
+            toast.error(
                 error.response?.data?.message ||
                 "Failed to create course"
             );
@@ -99,26 +96,6 @@ export default function CreateCoursePage() {
                             Create a new course for your students.
                         </p>
                     </div>
-
-                    {error && (
-                        <div className="mb-6 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400">
-                            <AlertCircle
-                                size={18}
-                                className="mt-0.5 shrink-0"
-                            />
-                            <span>{error}</span>
-                        </div>
-                    )}
-
-                    {success && (
-                        <div className="mb-6 flex items-start gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-400">
-                            <CheckCircle
-                                size={18}
-                                className="mt-0.5 shrink-0"
-                            />
-                            <span>{success}</span>
-                        </div>
-                    )}
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>

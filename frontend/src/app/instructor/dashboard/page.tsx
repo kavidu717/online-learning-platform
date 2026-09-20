@@ -10,6 +10,7 @@ import {
     Users,
     AlertCircle,
 } from "lucide-react";
+import { toast } from "sonner";
 import { API } from "@/service/axios";
 import { useAuthStore } from "@/store/authStore";
 
@@ -88,12 +89,13 @@ export default function InstructorDashboardPage() {
                     (course) => course._id !== courseId
                 )
             );
+            toast.success("Course deleted successfully");
         } catch (error: any) {
             console.error("Delete Course Error:", error);
             console.error("Status:", error.response?.status);
             console.error("Response:", error.response?.data);
 
-            setError(
+            toast.error(
                 error.response?.data?.message ||
                 "Failed to delete course"
             );

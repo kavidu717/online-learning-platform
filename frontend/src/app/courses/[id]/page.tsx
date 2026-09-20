@@ -11,6 +11,7 @@ import {
     AlertCircle,
     LogIn,
 } from "lucide-react";
+import { toast } from "sonner";
 import { API } from "@/service/axios";
 import { useAuthStore } from "@/store/authStore";
 
@@ -42,7 +43,6 @@ export default function CourseDetailsPage() {
     const [loading, setLoading] = useState(true);
     const [enrolling, setEnrolling] = useState(false);
     const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
 
     const courseId = params.id as string;
 
@@ -98,13 +98,11 @@ export default function CourseDetailsPage() {
 
         try {
             setEnrolling(true);
-            setError("");
-            setSuccess("");
 
             await API.post(`/enrollments/${courseId}`, {});
 
             setEnrolled(true);
-            setSuccess(
+            toast.success(
                 "You have successfully enrolled in this course."
             );
         } catch (error: any) {
@@ -112,7 +110,7 @@ export default function CourseDetailsPage() {
             console.error("Status:", error.response?.status);
             console.error("Response:", error.response?.data);
 
-            setError(
+            toast.error(
                 error.response?.data?.message ||
                 "Failed to enroll in course"
             );
@@ -243,19 +241,6 @@ export default function CourseDetailsPage() {
                                 </p>
                             </div>
                         </div>
-
-                        {error && (
-                            <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400">
-                                {error}
-                            </div>
-                        )}
-
-                        {success && (
-                            <div className="mb-5 flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-400">
-                                <CheckCircle size={18} />
-                                {success}
-                            </div>
-                        )}
 
                         {!token ? (
                             <button
