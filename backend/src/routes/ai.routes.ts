@@ -8,7 +8,7 @@ import {
 const router = Router();
 
 router.post(
-    "/recommendations",
+    "/course-recommendations",
     authenticate,
     authorize("student"),
     getCourseRecommendations
