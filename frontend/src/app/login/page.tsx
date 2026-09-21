@@ -30,9 +30,9 @@ export default function LoginPage() {
                 password,
             });
 
-            const { token, user } = response.data;
+            const { user } = response.data;
 
-            login(user, token);
+            login(user);
             toast.success("Login successful!");
 
             if (user.role === "instructor") {

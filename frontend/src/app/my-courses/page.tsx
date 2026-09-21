@@ -9,7 +9,7 @@ import {
     AlertCircle,
 } from "lucide-react";
 import { API } from "@/service/axios";
-import { useAuthStore } from "@/store/authStore";
+
 
 interface Instructor {
     _id: string;
@@ -35,16 +35,14 @@ interface Enrollment {
 }
 
 export default function MyCoursesPage() {
-    const { token } = useAuthStore();
+
 
     const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
-        if (!token) {
-            return;
-        }
+
 
         const fetchMyCourses = async () => {
             try {
@@ -52,13 +50,7 @@ export default function MyCoursesPage() {
                 setError("");
 
                 const response = await API.get(
-                    "/enrollments/my-courses",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+                    "/enrollments/my-courses",);
 
                 setEnrollments(response.data.enrollments);
             } catch (error: any) {
@@ -76,7 +68,7 @@ export default function MyCoursesPage() {
         };
 
         fetchMyCourses();
-    }, [token]);
+    }, []);
 
     if (loading) {
         return (

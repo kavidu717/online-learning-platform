@@ -127,9 +127,16 @@ export const login = async (req: Request, res: Response) => {
             }
         );
 
+        res.cookie("access_token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+
         res.status(200).json({
             message: "Login successful",
-            token,
+
             user: {
                 id: user._id,
                 firstName: user.firstName,
@@ -185,3 +192,18 @@ export const getMe = async (req: AuthenticatedRequest, res: Response) => {
 
     }
 }
+
+export const logout = async (
+    req: Request,
+    res: Response
+) => {
+    res.clearCookie("access_token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+    });
+
+    return res.status(200).json({
+        message: "Logout successful",
+    });
+};

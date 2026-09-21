@@ -6,13 +6,21 @@ import authRoutes from "./routes/auth.routes.js";
 import courseRoutes from "./routes/course.routes.js";
 import enrollmentRoutes from "./routes/enrollment.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
 
 const app = express();
 
-app.use(cors());
+app.use(cors(
+    {
+        origin: "http://localhost:3000",
+        credentials: true,
+    }
+));
+
+app.use(cookieParser());
 app.use(express.json());
 
 app.get("/", (req, res) => {

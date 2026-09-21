@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { User, Mail, Shield, LogOut, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import axios from "axios";
 import { API } from "@/service/axios";
 import { useAuthStore } from "@/store/authStore";
 
@@ -18,18 +19,13 @@ interface ProfileUser {
 export default function ProfilePage() {
     const router = useRouter();
 
-    const { user, token, logout } = useAuthStore();
+    const { logout } = useAuthStore();
 
     const [profile, setProfile] = useState<ProfileUser | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
-        if (!token) {
-            router.push("/login");
-            return;
-        }
-
         const fetchProfile = async () => {
             try {
                 setLoading(true);
@@ -38,33 +34,48 @@ export default function ProfilePage() {
                 const response = await API.get("/auth/me");
 
                 setProfile(response.data.user);
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error("Error fetching profile:", error);
 
-                if (error.response?.status === 401) {
-                    logout();
-                    router.push("/login");
-                    return;
-                }
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.status === 401) {
+                        logout();
+                        router.push("/login");
+                        return;
+                    }
 
-                setError(
-                    error.response?.data?.message ||
-                    "Failed to load profile"
-                );
+                    setError(
+                        error.response?.data?.message ||
+                        "Failed to load profile"
+                    );
+                } else {
+                    setError("Failed to load profile");
+                }
             } finally {
                 setLoading(false);
             }
         };
 
         fetchProfile();
-    }, [token, router, logout]);
+    }, [router, logout]);
 
-    const handleLogout = () => {
-        logout();
-        router.push("/login");
+    const handleLogout = async () => {
+        try {
+            await API.post("/auth/logout");
+
+            logout();
+
+            router.push("/login");
+        } catch (error: unknown) {
+            console.error("Logout error:", error);
+
+            logout();
+
+            router.push("/login");
+        }
     };
 
-    if (!token || loading) {
+    if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
                 <div className="text-center">
