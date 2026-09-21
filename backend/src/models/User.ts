@@ -4,6 +4,7 @@ export type UserRole = "student" | "instructor";
 export interface IUser extends Document {
     firstName: string;
     lastName: string;
+    username: string;
     email: string;
     password: string;
     role: UserRole;
@@ -14,37 +15,43 @@ export interface IUser extends Document {
 
 const userSchema = new Schema<IUser>({
     firstName: {
-         type: String,
-          required: true ,
-          trim:true
-         },
-     lastName: {
         type: String,
         required: true,
-        trim:true
-          }, 
+        trim: true
+    },
+    lastName: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+    },
     email: {
         type: String,
         required: true,
         unique: true,
-        trim:true,
+        trim: true,
         lowercase: true
-        },
-     password: {
+    },
+    password: {
         type: String,
         required: true,
         minlength: 6
-        },
-       role: {
-            type: String,
-            enum: ["student", "instructor"],
-            default: "student",
-        },   
-
-        
+    },
+    role: {
+        type: String,
+        enum: ["student", "instructor"],
+        default: "student",
+    },
 
 
-    
+
+
+
 
 
 }, { timestamps: true });

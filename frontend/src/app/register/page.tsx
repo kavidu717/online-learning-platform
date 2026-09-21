@@ -26,6 +26,7 @@ export default function RegisterPage() {
     const router = useRouter();
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [accountType, setAccountType] = useState<AccountType>("student");
@@ -52,10 +53,11 @@ export default function RegisterPage() {
             const requestData: {
                 firstName: string;
                 lastName: string;
+                username: string;
                 email: string;
                 password: string;
                 invitationCode?: string;
-            } = { firstName, lastName, email, password };
+            } = { firstName, lastName, username, email, password };
 
             if (accountType === "instructor") {
                 requestData.invitationCode = invitationCode;
@@ -157,6 +159,39 @@ export default function RegisterPage() {
                                 </div>
                                 {errors.lastName && <p className="text-sm font-medium text-destructive mt-1.5">{errors.lastName}</p>}
                             </div>
+                        </div>
+                        <div className="space-y-2.5">
+                            <label
+                                htmlFor="username"
+                                className="text-sm font-medium text-foreground"
+                            >
+                                Username
+                            </label>
+
+                            <div className="relative group">
+                                <User
+                                    className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary"
+                                />
+
+                                <input
+                                    id="username"
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    placeholder="johndoe"
+                                    required
+                                    className={`w-full rounded-xl border bg-background px-4 py-3.5 pl-11 text-sm shadow-sm transition-all placeholder:text-muted-foreground focus:outline-none focus:ring-4 focus:ring-primary/10 hover:border-primary/50 ${errors.username
+                                        ? "border-destructive focus:border-destructive focus:ring-destructive/10"
+                                        : "border-input focus:border-primary"
+                                        }`}
+                                />
+                            </div>
+
+                            {errors.username && (
+                                <p className="text-sm font-medium text-destructive mt-1.5">
+                                    {errors.username}
+                                </p>
+                            )}
                         </div>
 
                         {/* Email */}

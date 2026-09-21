@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { API } from "@/service/axios";
 import { useAuthStore } from "@/store/authStore";
-import { Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight, Sparkles } from "lucide-react";
+import { User, Lock, Eye, EyeOff, AlertCircle, ArrowRight, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 export default function LoginPage() {
     const router = useRouter();
     const login = useAuthStore((state) => state.login);
 
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ export default function LoginPage() {
 
         try {
             const response = await API.post("/auth/login", {
-                email,
+                username,
                 password,
             });
 
@@ -91,21 +91,22 @@ export default function LoginPage() {
                     {/* Form Section */}
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="space-y-2.5">
-                            <label htmlFor="email" className="text-sm font-medium text-foreground">
-                                Email Address
+                            <label htmlFor="username" className="text-sm font-medium text-foreground">
+                                Username
                             </label>
                             <div className="relative group">
-                                <Mail className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary" />
+                                <User className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary" />
                                 <input
-                                    id="email"
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="you@example.com"
+                                    id="username"
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    placeholder="john doe...."
                                     required
                                     className="w-full rounded-xl border border-input bg-background px-4 py-3.5 pl-11 text-sm shadow-sm transition-all placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 hover:border-primary/50"
                                 />
                             </div>
+
                         </div>
 
                         <div className="space-y-2.5">

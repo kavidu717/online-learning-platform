@@ -19,9 +19,11 @@ export const register = async (req: Request, res: Response) => {
             });
         }
 
-        const { firstName, lastName, email, password, invitationCode } = validationResult.data;
+        const { firstName, lastName, username, email, password, invitationCode } = validationResult.data;
 
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({
+            $or: [{ username }, { email }],
+        });
 
         if (existingUser) {
             return res.status(400).json({
@@ -49,6 +51,7 @@ export const register = async (req: Request, res: Response) => {
         const user = await User.create({
             firstName,
             lastName,
+            username,
             email,
             password: hashedPassword,
             role,
@@ -60,7 +63,7 @@ export const register = async (req: Request, res: Response) => {
                 id: user._id,
                 firstName: user.firstName,
                 lastName: user.lastName,
-
+                username: user.username,
                 email: user.email,
                 role: user.role
             }
@@ -89,9 +92,9 @@ export const login = async (req: Request, res: Response) => {
             });
         }
 
-        const { email, password } = validationResult.data;
+        const { username, password } = validationResult.data;
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ username });
 
         if (!user) {
             return res.status(404).json({
@@ -103,7 +106,7 @@ export const login = async (req: Request, res: Response) => {
 
         if (!isPasswordValid) {
             return res.status(401).json({
-                message: "Invalid password or email",
+                message: "Invalid password or username",
             });
 
         }
@@ -141,6 +144,7 @@ export const login = async (req: Request, res: Response) => {
                 id: user._id,
                 firstName: user.firstName,
                 lastName: user.lastName,
+                username: user.username,
                 email: user.email,
                 role: user.role,
             },
