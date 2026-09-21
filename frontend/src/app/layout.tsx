@@ -5,6 +5,7 @@ import ThemeProvider from "@/components/ThemeProvider";
 import { Toaster } from "sonner";
 import Footer from "@/components/Footer";
 
+
 export const metadata: Metadata = {
     title: "LearnHub",
     description: "Online Learning Platform with GPT Integration",
@@ -22,6 +23,7 @@ export default function RootLayout({
                     <Navbar />
                     <main>{children}</main>
                     <Toaster position="top-right" richColors />
+
                     <Footer />
 
                 </ThemeProvider>

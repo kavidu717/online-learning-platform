@@ -34,6 +34,13 @@ export default function Navbar() {
                             </Link>
 
                             <Link
+                                href="/ai-recommendations"
+                                className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
+                            >
+                                AI Recommendations
+                            </Link>
+
+                            <Link
                                 href="/login"
                                 className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
                             >
@@ -56,6 +63,13 @@ export default function Navbar() {
                                         className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
                                     >
                                         Courses
+                                    </Link>
+
+                                    <Link
+                                        href="/ai-recommendations"
+                                        className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
+                                    >
+                                        AI Recommendations
                                     </Link>
 
                                     <Link

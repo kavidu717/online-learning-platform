@@ -9,8 +9,7 @@ const router = Router();
 
 router.post(
     "/course-recommendations",
-    authenticate,
-    authorize("student"),
+
     getCourseRecommendations
 );
 

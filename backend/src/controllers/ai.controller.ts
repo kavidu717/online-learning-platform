@@ -1,19 +1,15 @@
 import openai from "../config/openai.js";
 import { canMakeAIRequest, incrementAIRequestCounter, getAIRequestCount, getRemainingAIRequests } from "../config/aiRequestCounter.js";
-import { Response } from 'express'
-import { AuthenticatedRequest } from "../middleware/auth.middleware.js";
+import { Response, Request } from 'express'
+
 import Course from "../models/Course.js";
 
 export const getCourseRecommendations = async (
-    req: AuthenticatedRequest,
+    req: Request,
     res: Response
 ) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({
-                message: "Authentication required",
-            });
-        }
+
 
         const { goal } = req.body;
 
