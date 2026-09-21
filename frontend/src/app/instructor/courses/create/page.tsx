@@ -10,7 +10,7 @@ import { useAuthStore } from "@/store/authStore";
 
 export default function CreateCoursePage() {
     const router = useRouter();
-    const { token } = useAuthStore();
+
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -21,28 +21,17 @@ export default function CreateCoursePage() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (!token) {
-            router.push("/login");
-            return;
-        }
+
 
         try {
             setLoading(true);
 
-            const response = await API.post(
-                "/courses",
-                {
-                    title,
-                    description,
-                    content,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
 
+            const response = await API.post("/courses", {
+                title,
+                description,
+                content,
+            });
             toast.success(
                 response.data?.message || "Course created successfully."
             );

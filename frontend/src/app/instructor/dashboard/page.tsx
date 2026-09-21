@@ -32,7 +32,7 @@ interface Course {
 }
 
 export default function InstructorDashboardPage() {
-    const { token, user } = useAuthStore();
+    const { user } = useAuthStore();
 
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
@@ -40,9 +40,7 @@ export default function InstructorDashboardPage() {
     const [deletingId, setDeletingId] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!token) {
-            return;
-        }
+
 
         const fetchMyCourses = async () => {
             try {
@@ -67,7 +65,7 @@ export default function InstructorDashboardPage() {
         };
 
         fetchMyCourses();
-    }, [token]);
+    }, []);
 
     const handleDelete = async (courseId: string) => {
         const confirmed = window.confirm(

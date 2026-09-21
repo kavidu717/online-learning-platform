@@ -36,7 +36,7 @@ export default function CourseDetailsPage() {
     const params = useParams();
     const router = useRouter();
 
-    const { token, user } = useAuthStore();
+    const { user, isAuthenticated } = useAuthStore();
 
     const [course, setCourse] = useState<Course | null>(null);
     const [enrolled, setEnrolled] = useState(false);
@@ -62,17 +62,31 @@ export default function CourseDetailsPage() {
 
                 setCourse(courseResponse.data.course);
 
-                if (token && user?.role === "student") {
+                if (
+                    isAuthenticated &&
+                    user?.role === "student"
+                ) {
                     const statusResponse = await API.get(
                         `/enrollments/${courseId}/status`
                     );
 
-                    setEnrolled(statusResponse.data.enrolled);
+                    setEnrolled(
+                        statusResponse.data.enrolled
+                    );
                 }
             } catch (error: any) {
-                console.error("Course Details Error:", error);
-                console.error("Status:", error.response?.status);
-                console.error("Response:", error.response?.data);
+                console.error(
+                    "Course Details Error:",
+                    error
+                );
+                console.error(
+                    "Status:",
+                    error.response?.status
+                );
+                console.error(
+                    "Response:",
+                    error.response?.data
+                );
 
                 setError(
                     error.response?.data?.message ||
@@ -84,10 +98,10 @@ export default function CourseDetailsPage() {
         };
 
         fetchCourse();
-    }, [courseId, token, user?.role]);
+    }, [courseId, isAuthenticated, user?.role]);
 
     const handleEnroll = async () => {
-        if (!token) {
+        if (!isAuthenticated) {
             router.push("/login");
             return;
         }
@@ -99,16 +113,29 @@ export default function CourseDetailsPage() {
         try {
             setEnrolling(true);
 
-            await API.post(`/enrollments/${courseId}`, {});
+            await API.post(
+                `/enrollments/${courseId}`,
+                {}
+            );
 
             setEnrolled(true);
+
             toast.success(
                 "You have successfully enrolled in this course."
             );
         } catch (error: any) {
-            console.error("Enrollment Error:", error);
-            console.error("Status:", error.response?.status);
-            console.error("Response:", error.response?.data);
+            console.error(
+                "Enrollment Error:",
+                error
+            );
+            console.error(
+                "Status:",
+                error.response?.status
+            );
+            console.error(
+                "Response:",
+                error.response?.data
+            );
 
             toast.error(
                 error.response?.data?.message ||
@@ -197,6 +224,7 @@ export default function CourseDetailsPage() {
                             <div className="rounded-xl border border-gray-200 p-5 dark:border-gray-800">
                                 <div className="mb-3 flex items-center gap-2 text-gray-500 dark:text-gray-400">
                                     <User size={18} />
+
                                     <span className="text-sm font-medium">
                                         Instructor
                                     </span>
@@ -215,6 +243,7 @@ export default function CourseDetailsPage() {
                             <div className="rounded-xl border border-gray-200 p-5 dark:border-gray-800">
                                 <div className="mb-3 flex items-center gap-2 text-gray-500 dark:text-gray-400">
                                     <BookOpen size={18} />
+
                                     <span className="text-sm font-medium">
                                         Course
                                     </span>
@@ -242,9 +271,11 @@ export default function CourseDetailsPage() {
                             </div>
                         </div>
 
-                        {!token ? (
+                        {!isAuthenticated ? (
                             <button
-                                onClick={() => router.push("/login")}
+                                onClick={() =>
+                                    router.push("/login")
+                                }
                                 className="flex w-full items-center justify-center gap-2 rounded-lg bg-black px-5 py-3 font-medium text-white transition hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
                             >
                                 <LogIn size={20} />

@@ -12,7 +12,7 @@ import {
     AlertCircle,
 } from "lucide-react";
 import { API } from "@/service/axios";
-import { useAuthStore } from "@/store/authStore";
+
 
 interface Student {
     _id: string;
@@ -35,7 +35,7 @@ interface Course {
 export default function CourseStudentsPage() {
     const params = useParams();
 
-    const { token } = useAuthStore();
+
 
     const [course, setCourse] = useState<Course | null>(null);
     const [students, setStudents] = useState<Enrollment[]>([]);
@@ -45,9 +45,7 @@ export default function CourseStudentsPage() {
     const courseId = params.id as string;
 
     useEffect(() => {
-        if (!token || !courseId) {
-            return;
-        }
+
 
         const fetchStudents = async () => {
             try {
@@ -80,7 +78,7 @@ export default function CourseStudentsPage() {
         };
 
         fetchStudents();
-    }, [token, courseId]);
+    }, [courseId]);
 
     if (loading) {
         return (

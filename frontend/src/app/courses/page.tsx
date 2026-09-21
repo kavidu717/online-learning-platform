@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BookOpen, User, AlertCircle } from "lucide-react";
 import { API } from "@/service/axios";
-import { useAuthStore } from "@/store/authStore";
+
 
 interface Instructor {
     _id: string;
@@ -25,7 +25,7 @@ interface Course {
 }
 
 export default function CoursesPage() {
-    const { token } = useAuthStore();
+
 
 
 

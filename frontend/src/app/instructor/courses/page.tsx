@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { API } from "@/service/axios";
-import { useAuthStore } from "@/store/authStore";
+
 
 interface Instructor {
     _id: string;
@@ -33,7 +33,7 @@ interface Course {
 }
 
 export default function InstructorCoursesPage() {
-    const { token } = useAuthStore();
+
 
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
@@ -41,9 +41,6 @@ export default function InstructorCoursesPage() {
     const [deletingId, setDeletingId] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!token) {
-            return;
-        }
 
         const fetchMyCourses = async () => {
             try {
@@ -68,7 +65,7 @@ export default function InstructorCoursesPage() {
         };
 
         fetchMyCourses();
-    }, [token]);
+    }, []);
 
     const handleDelete = async (courseId: string) => {
         const confirmed = window.confirm(
