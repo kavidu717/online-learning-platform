@@ -143,10 +143,10 @@ Tracks which student is enrolled in which course.
 The entire application infrastructure is hosted within the **Amazon Web Services (AWS)** ecosystem, with custom domain management handled via **GoDaddy**.
 
 ### Backend (Node.js/Express API)
-- **AWS ECS (Elastic Container Service):** The backend API is deployed on AWS ECS. This allows for scalable, robust, and highly available services managed through ECS Tasks and AWS Fargate (or EC2).
+- **AWS EC2 (Elastic Compute Cloud):** The backend API is deployed directly on AWS EC2 instances. This provides full control over the server environment, allowing for robust and scalable API services.
 
 ### Frontend (Next.js 16)
-- **AWS Hosting:** The Next.js frontend is hosted directly on AWS, running as a Node.js server (e.g., via AWS ECS or EC2) alongside the backend infrastructure for seamless integration.
+- **AWS Hosting:** The Next.js frontend is hosted directly on AWS, running as a Node.js server on AWS EC2 alongside the backend infrastructure for seamless integration.
 
 ### Domain & DNS
 - **GoDaddy:** The custom domain is registered through GoDaddy and configured to point to the AWS infrastructure (e.g., via AWS Route 53 or directly to an Application Load Balancer / CloudFront distribution).
