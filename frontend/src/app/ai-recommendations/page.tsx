@@ -9,12 +9,15 @@ import { API } from "@/service/axios";
 interface Recommendation {
     courseId: string;
     title: string;
+    instructor: string;
     reason: string;
 }
 
 interface RecommendationResponse {
     message: string;
     recommendations: Recommendation[];
+    suggestions: string[];
+    learningPath: string[];
     requestCount: number;
     remainingRequests: number;
 }
@@ -28,6 +31,8 @@ export default function AIRecommendationsPage() {
     const [recommendations, setRecommendations] = useState<
         Recommendation[]
     >([]);
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [learningPath, setLearningPath] = useState<string[]>([]);
     const [requestCount, setRequestCount] = useState<number | null>(null);
     const [remainingRequests, setRemainingRequests] = useState<number | null>(
         null
@@ -46,6 +51,8 @@ export default function AIRecommendationsPage() {
         setLoading(true);
         setError("");
         setRecommendations([]);
+        setSuggestions([]);
+        setLearningPath([]);
 
         try {
             const response = await API.post<RecommendationResponse>(
@@ -56,6 +63,8 @@ export default function AIRecommendationsPage() {
             );
 
             setRecommendations(response.data.recommendations);
+            setSuggestions(response.data.suggestions);
+            setLearningPath(response.data.learningPath);
             setRequestCount(response.data.requestCount);
             setRemainingRequests(response.data.remainingRequests);
         } catch (error: unknown) {
@@ -142,65 +151,129 @@ export default function AIRecommendationsPage() {
                     )}
                 </div>
 
-                {recommendations.length > 0 && (
-                    <section className="mt-10">
-                        <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                                    Recommended Courses
-                                </h2>
+                {(recommendations.length > 0 ||
+                    suggestions.length > 0 ||
+                    learningPath.length > 0) && (
+                        <section className="mt-10">
+                            {recommendations.length > 0 && (
+                                <div>
+                                    <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                                        <div>
+                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                                Recommended Courses
+                                            </h2>
 
-                                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                    Courses selected based on your learning
-                                    goal.
-                                </p>
-                            </div>
+                                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                                Courses selected based on your
+                                                learning goal.
+                                            </p>
+                                        </div>
+
+                                        {requestCount !== null &&
+                                            remainingRequests !== null && (
+                                                <div className="text-xs text-gray-500 dark:text-gray-400">
+                                                    AI requests: {requestCount} / 250
+                                                    <span className="mx-2">•</span>
+                                                    Remaining: {remainingRequests}
+                                                </div>
+                                            )}
+                                    </div>
+
+                                    <div className="grid gap-5 md:grid-cols-2">
+                                        {recommendations.map((course) => (
+                                            <div
+                                                key={course.courseId}
+                                                className="flex flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+                                            >
+                                                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white">
+                                                    <BookOpen size={24} />
+                                                </div>
+
+                                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                                                    {course.title}
+                                                </h3>
+
+                                                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                                                    Instructor: {course.instructor}
+                                                </p>
+
+                                                <div className="mt-4 flex-1">
+                                                    <p className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
+                                                        Why this course?
+                                                    </p>
+
+                                                    <p className="text-sm leading-6 text-gray-600 dark:text-gray-400">
+                                                        {course.reason}
+                                                    </p>
+                                                </div>
+
+                                                <Link
+                                                    href={`/courses/${course.courseId}`}
+                                                    className="mt-6 inline-flex items-center justify-center rounded-xl border border-gray-300 px-4 py-3 text-sm font-semibold text-gray-900 transition hover:bg-gray-100 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
+                                                >
+                                                    View Course
+                                                </Link>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {suggestions.length > 0 && (
+                                <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                                        AI Suggestions
+                                    </h2>
+
+                                    <div className="mt-4 space-y-3">
+                                        {suggestions.map((suggestion, index) => (
+                                            <div
+                                                key={index}
+                                                className="rounded-xl bg-gray-50 px-4 py-3 text-sm text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                                            >
+                                                {suggestion}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {learningPath.length > 0 && (
+                                <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                                        Suggested Learning Path
+                                    </h2>
+
+                                    <div className="mt-5 space-y-4">
+                                        {learningPath.map((step, index) => (
+                                            <div
+                                                key={index}
+                                                className="flex items-start gap-4"
+                                            >
+                                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black text-sm font-bold text-white dark:bg-white dark:text-black">
+                                                    {index + 1}
+                                                </div>
+
+                                                <p className="pt-1 text-sm text-gray-700 dark:text-gray-300">
+                                                    {step}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             {requestCount !== null &&
-                                remainingRequests !== null && (
-                                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                                remainingRequests !== null &&
+                                recommendations.length === 0 && (
+                                    <div className="mt-6 text-right text-xs text-gray-500 dark:text-gray-400">
                                         AI requests: {requestCount} / 250
                                         <span className="mx-2">•</span>
                                         Remaining: {remainingRequests}
                                     </div>
                                 )}
-                        </div>
-
-                        <div className="grid gap-5 md:grid-cols-2">
-                            {recommendations.map((course) => (
-                                <div
-                                    key={course.courseId}
-                                    className="flex flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
-                                >
-                                    <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white">
-                                        <BookOpen size={24} />
-                                    </div>
-
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                                        {course.title}
-                                    </h3>
-
-                                    <div className="mt-4 flex-1">
-                                        <p className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
-                                            Why this course?
-                                        </p>
-
-                                        <p className="text-sm leading-6 text-gray-600 dark:text-gray-400">
-                                            {course.reason}
-                                        </p>
-                                    </div>
-
-                                    <Link
-                                        href={`/courses/${course.courseId}`}
-                                        className="mt-6 inline-flex items-center justify-center rounded-xl border border-gray-300 px-4 py-3 text-sm font-semibold text-gray-900 transition hover:bg-gray-100 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
-                                    >
-                                        View Course
-                                    </Link>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-                )}
+                        </section>
+                    )}
             </div>
         </main>
     );
